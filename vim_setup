@@ -1,0 +1,123 @@
+https://github.com/ericzhang-cn/vim-conf
+
+- ,+d：打开或关闭NERDTree
+- ,+t：打开或关闭taglist
+
+1. run python code inside Vim
+```
+## add line below to .vimrc, this will save and execute file when press F5
+autocmd FileType python nnoremap <buffer> <F5> :exec 'w !python' shellescape(@%, 1)<cr>
+
+```
+2. my VIM configuration
+```
+:set nu
+:syntax enable
+:set updatetime=300
+:set t_Co=8
+:colorscheme desert
+autocmd FileType python nnoremap <buffer> <F5> :exec 'w !python' shellescape(@%, 1)<cr>
+set tabstop=2
+set softtabstop=2
+set noexpandtab
+set shiftwidth=2
+set splitright
+set splitbelow
+set relativenumber
+filetype indent on
+
+set colorcolumn=80
+highlight ColorColumn ctermbg=lightgray
+
+" Reference chart of values:
+"   Ps = 0  -> blinking block.
+"   Ps = 1  -> blinking block (default).
+"   Ps = 2  -> steady block.
+"   Ps = 3  -> blinking underline.
+"   Ps = 4  -> steady underline.
+"   Ps = 5  -> blinking bar (xterm).
+"   Ps = 6  -> steady bar (xterm).
+let &t_SI = "\e[5 q"
+let &t_EI = "\e[2 q"
+
+" show trailing space as dot
+set list
+set listchars=tab:⣿\ ,eol:¬,trail:⋅,extends:»,precedes:«,nbsp:░
+" or try these ['|', '¦', '┆', '┊']
+
+" set status bar 
+set laststatus=2
+set statusline+=%#PmenuSel#
+set statusline+=%#LineNr#
+set statusline+=\ %F
+set statusline+=%m
+set statusline+=%=
+set statusline+=\ line:%l\ \ col:%c
+set statusline+=\ %4p%%
+set statusline+=\ %6y
+set statusline+=\ %{&fileencoding?&fileencoding:&encoding}
+set statusline+=\[%{&fileformat}\]
+
+
+
+" move among split windows
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+
+
+" split the window horizontally, or vertically
+nnoremap <silent> <C-o> <C-w>s
+nnoremap <silent> <C-i> <C-w>v
+
+
+" resize current window
+nnoremap <silent> <S-k> :resize -5<cr>
+nnoremap <silent> <S-j> :resize +5<cr>
+nnoremap <silent> <S-h> :vertical resize -5<cr>
+nnoremap <silent> <S-l> :vertical resize +5<cr>
+"nnoremap <silent> <S-k> <C-w>+
+"nnoremap <silent> <S-j> <C-w>-
+"nnoremap <silent> <S-h> <C-w><
+"nnoremap <silent> <S-l> <C-w>>
+"nnoremap <silent> <S-a> <C-w>=
+
+
+autocmd FileType sh inoremap ;h #!/bin/bash<Enter><Enter>
+autocmd FileType sh inoremap ;i if<Space>[<Space><Space>];then<Enter>fi<Esc>k4li
+autocmd FileType sh inoremap ;f for<Space>;do<Enter>done<Esc>kli
+
+```
+
+3. setup Vim for python environment
+	1. Install Vim plugin manager Pathogen
+```
+mkdir -p ~/.vim/autoload ~/.vim/bundle && \
+curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+```
+
+	1. Install Jedi-vim autocompletion: https://github.com/davidhalter/jedi-vim
+	2. Install vim-syntastic: https://github.com/vim-syntastic/syntastic
+	3. Install flake8 syntax checker: pip install flake8
+	4. Install shellcheck syntac checker: https://github.com/koalaman/shellcheck#installing-a-pre-compiled-binary
+	5. Install parenthesis autocompeletion: git clone git://github.com/jiangmiao/auto-pairs.git ~/.vim/bundle/auto-pairs
+	6. Nerdtree
+	7. vim-surround: https://github.com/tpope/vim-surround
+```
+# ~/vim.rc
+execute pathogen#infect() 
+filetype plugin indent on 
+set statusline+=%#warningmsg# 
+set statusline+=%{SyntasticStatuslineFlag()} 
+set statusline+=%* 
+let g:syntastic_always_populate_loc_list = 1 
+let g:syntastic_auto_loc_list = 1 
+let g:syntastic_check_on_open = 1 
+let g:syntastic_check_on_wq = 0 
+let g:syntastic_python_checkers = ['flake8']
+let g:syntastic_sh_checkers = ['shellcheck']
+let g:syntastic_quiet_messages = { "type": "style" }  # suppress style warnings
+"autocmd BufWritePost *.py call flake8#Flake8()
+```
+
